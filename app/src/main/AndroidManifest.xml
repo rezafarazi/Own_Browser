@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.sorapp.own.browser" android:installLocation="preferExternal">
+
+
+    <!--get Permissions Start-->
+    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <!--get Permissions End-->
+
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Own_Browser"
+        android:usesCleartextTraffic="true">
+        <activity
+            android:name=".Main_ac"
+            android:exported="true"
+            android:theme="@style/Main_Activity_Theme">
+
+            <intent-filter android:label="@string/app_name">
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:scheme="http" android:host="google.com" android:pathPrefix="/"/>
+                <data android:scheme="https" android:host="google.com" android:pathPrefix="/"/>
+            </intent-filter>
+
+        </activity>
+        <activity
+            android:name=".Splash_ac"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

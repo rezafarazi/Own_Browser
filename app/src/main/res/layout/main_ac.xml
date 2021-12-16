@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Main_ac"
+    android:background="@color/white">
+
+
+    <!--URL Box Start-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:background="@color/theme"
+        android:orientation="horizontal"
+        android:elevation="5dp"
+        android:id="@+id/main_ac_top_app_bar">
+
+        <!--URL Textbox Start-->
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:hint="@string/please_enter_url"
+            android:background="@drawable/textbox_url_box"
+            android:paddingRight="14dp"
+            android:paddingLeft="14dp"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
+            android:fontFamily="12dp"
+            android:textColor="@color/textcolor"
+            android:textColorHint="@color/textcolor"
+            android:id="@+id/URL_BOX"
+            android:layout_weight="1"
+            android:inputType="textUri"/>
+        <!--URL Textbox End-->
+
+
+        <!--Home Buttn Start-->
+        <ImageButton
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/ic_home"
+            android:layout_marginTop="17dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="10dp"
+            android:onClick="On_Click_HOME_Btn"
+            android:longClickable="true"
+            android:id="@+id/main_ac_home_btn"/>
+        <!--Home Buttn End-->
+
+
+    </LinearLayout>
+    <!--URL Box End-->
+
+
+
+    <!--ProgressBar Loading Start-->
+    <ProgressBar
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:layout_below="@id/main_ac_top_app_bar"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:id="@+id/main_ac_top_progressbar"
+        android:progress="0"/>
+    <!--ProgressBar Loading End-->
+
+
+
+
+    <!--Webview Start-->
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/refresh_layout"
+        android:layout_below="@id/main_ac_top_progressbar">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <!--Browser Start-->
+            <WebView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/main_ac_webview"/>
+            <!--Browser End-->
+
+
+            <!--Ineternet Is Error Start-->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="14dp"
+                android:id="@+id/main_ac_internet_error_ly"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:layout_centerInParent="true"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                            <ImageView
+                                android:layout_width="100dp"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/server_ic"
+                                android:layout_centerInParent="true"/>
+
+                    </RelativeLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/server_is_notwork"
+                        android:textAlignment="center"
+                        android:textColor="@color/textcolor"
+                        android:textSize="14dp"/>
+
+                </LinearLayout>
+
+            </RelativeLayout>
+            <!--Ineternet Is Error End-->
+
+
+        </RelativeLayout>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    <!--Webview End-->
+
+
+
+
+
+
+
+</RelativeLayout>

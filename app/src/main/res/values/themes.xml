@@ -1,0 +1,17 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.Own_Browser" parent="Theme.AppCompat.NoActionBar">
+        <item name="colorPrimaryDark">@color/theme</item>
+        <item name="android:windowLightNavigationBar">true</item>
+        <item name="fontFamily">@font/fnt</item>
+    </style>
+
+
+    <!--Main Activity Theme-->
+    <style name="Main_Activity_Theme" parent="Theme.AppCompat.NoActionBar">
+        <item name="fontFamily">@font/fnt</item>
+        <item name="colorPrimaryDark">@color/theme</item>
+        <item name="android:windowLightNavigationBar">true</item>
+    </style>
+
+</resources>

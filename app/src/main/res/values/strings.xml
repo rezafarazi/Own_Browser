@@ -1,0 +1,19 @@
+<resources>
+
+
+    <!--Main Applicaton Texts Start-->
+    <string name="app_name">Own_Browser</string>
+    <!--Main Applicaton Texts End-->
+
+    <!--Splash Screen Texts Start-->
+    <string name="version_name">1.0</string>
+    <!--Splash Screen Texts End-->
+
+
+    <!--Main Acttivity Start-->
+    <string name="please_enter_url">Plase enter url address</string>
+    <string name="server_is_notwork">Your server is not work</string>
+    <!--Main Acttivity End-->
+
+
+</resources>
