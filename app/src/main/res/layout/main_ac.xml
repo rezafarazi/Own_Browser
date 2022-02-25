@@ -28,7 +28,7 @@
             android:paddingLeft="14dp"
             android:paddingTop="3dp"
             android:paddingBottom="3dp"
-            android:fontFamily="12dp"
+            android:fontFamily="@font/fnt"
             android:textColor="@color/textcolor"
             android:textColorHint="@color/textcolor"
             android:id="@+id/URL_BOX"

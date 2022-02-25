@@ -5,6 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Splash_ac extends AppCompatActivity
 {
@@ -41,6 +45,7 @@ public class Splash_ac extends AppCompatActivity
             public void onFinish()
             {
                 startActivity(new Intent(getApplicationContext(),Main_ac.class));
+
                 Timer.cancel();
             }
         }.start();

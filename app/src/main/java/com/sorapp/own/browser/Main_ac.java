@@ -1,10 +1,15 @@
 package com.sorapp.own.browser;
 
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.media.MediaSync;
 import android.net.Uri;
 import android.os.Build;
@@ -69,6 +74,7 @@ public class Main_ac extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_ac);
+        GetRuntimePermissions();
         Get_All_Components();
         GET_URL(Home_URL);
     }
@@ -93,6 +99,44 @@ public class Main_ac extends AppCompatActivity
         }
     }
     //OnBack Click End
+
+
+
+
+    //Run Time Permission Start
+    @SuppressLint("NewApi")
+    public void GetRuntimePermissions()
+    {
+        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE},200);
+    }
+    //Run Time Permission End
+
+
+
+
+
+    //Permission Action Result Start
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
+    {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        boolean all_permissions=true;
+        for(int i=0;i<permissions.length;i++)
+        {
+            if(grantResults[i]== PackageManager.PERMISSION_DENIED)
+            {
+                all_permissions=false;
+            }
+        }
+
+        if(all_permissions)
+        {
+            GET_CACHE_PATH();
+        }
+    }
+    //Permission Action Result End
+
+
 
 
 
@@ -236,7 +280,6 @@ public class Main_ac extends AppCompatActivity
     //Webview Default Setting Start
     public void Get_Webview_Default_Setting()
     {
-        GET_CACHE_PATH();
 
         //Setting
         MAIN_AC_WEBVIEW.getSettings().setJavaScriptEnabled(true);
@@ -246,8 +289,8 @@ public class Main_ac extends AppCompatActivity
         MAIN_AC_WEBVIEW.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
         MAIN_AC_WEBVIEW.getSettings().setDatabaseEnabled(true);
         MAIN_AC_WEBVIEW.getSettings().setDefaultTextEncodingName("utf-8");
-        MAIN_AC_WEBVIEW.getSettings(). setSupportZoom(true);
-        MAIN_AC_WEBVIEW.getSettings(). setAppCachePath(CACHE_PATH);
+        MAIN_AC_WEBVIEW.getSettings().setSupportZoom(true);
+        MAIN_AC_WEBVIEW.getSettings().setAppCachePath(CACHE_PATH);
 
         //Get Browsers Client
         GetWebviewClient();
