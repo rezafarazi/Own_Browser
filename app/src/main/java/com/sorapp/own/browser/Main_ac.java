@@ -2,15 +2,20 @@ package com.sorapp.own.browser;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.MediaSync;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
@@ -25,7 +30,11 @@ import android.widget.Toast;
 import androidx.swiperefreshlayout.widget.*;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
 public class Main_ac extends AppCompatActivity
 {
@@ -155,6 +164,7 @@ public class Main_ac extends AppCompatActivity
         OnClick_Set_HomePage();
 
         INTERNET_ERROR=(RelativeLayout) findViewById(R.id.main_ac_internet_error_ly);
+
     }
     //Get All Components End
 
@@ -169,6 +179,21 @@ public class Main_ac extends AppCompatActivity
         MAIN_AC_WEBVIEW.setVisibility(View.GONE);
     }
     //Show Server Error End
+
+
+
+
+
+    //Get Check DeepLink Start
+    public void Get_DeepLink()
+    {
+        Uri DeepLink=getIntent().getData();
+        if(DeepLink!=null)
+        {
+            GET_URL(DeepLink.toString());
+        }
+    }
+    //Get Check DeepLink End
 
 
 
@@ -234,6 +259,72 @@ public class Main_ac extends AppCompatActivity
 
 
 
+    //Chosee FIle Web View
+    private static final int INPUT_FILE_REQUEST_CODE = 1;
+    private ValueCallback<Uri> mUploadMessage;
+    private final static int FILECHOOSER_RESULTCODE = 1;
+    private ValueCallback<Uri[]> mFilePathCallback;
+    private Uri mCapturedImageURI = null;
+    private String mCameraPhotoPath;
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+        {
+            if (requestCode != INPUT_FILE_REQUEST_CODE || mFilePathCallback == null) {
+                super.onActivityResult(requestCode, resultCode, data);
+                return;
+            }
+            Uri[] results = null;
+            // Check that the response is a good one
+            if (resultCode == Activity.RESULT_OK) {
+                if (data == null) {
+                    // If there is not data, then we may have taken a photo
+                    if (mCameraPhotoPath != null) {
+                        results = new Uri[]{Uri.parse(mCameraPhotoPath)};
+                    }
+                } else {
+                    String dataString = data.getDataString();
+                    if (dataString != null) {
+                        results = new Uri[]{Uri.parse(dataString)};
+                    }
+                }
+            }
+            mFilePathCallback.onReceiveValue(results);
+            mFilePathCallback = null;
+        } else if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
+            if (requestCode != FILECHOOSER_RESULTCODE || mUploadMessage == null) {
+                super.onActivityResult(requestCode, resultCode, data);
+                return;
+            }
+            if (requestCode == FILECHOOSER_RESULTCODE) {
+                if (null == this.mUploadMessage) {
+                    return;
+                }
+                Uri result = null;
+                try {
+                    if (resultCode != RESULT_OK) {
+                        result = null;
+                    } else {
+                        // retrieve from the private variable if the intent is null
+                        result = data == null ? mCapturedImageURI : data.getData();
+                    }
+                } catch (Exception e) {
+                    Toast.makeText(getApplicationContext(), "activity :" + e,
+                            Toast.LENGTH_LONG).show();
+                }
+                mUploadMessage.onReceiveValue(result);
+                mUploadMessage = null;
+            }
+        }
+        return;
+    }
+    //Chosee FIle Web View
+
+
+
+
+
+
     //Get Chrome WebClient Start
     private void GetChromeClient()
     {
@@ -252,6 +343,69 @@ public class Main_ac extends AppCompatActivity
 
                 super.onProgressChanged(view, newProgress);
             }
+
+
+            public boolean onShowFileChooser(WebView view, ValueCallback<Uri[]> filePath, WebChromeClient.FileChooserParams fileChooserParams)
+            {
+                // Double check that we don't have any existing callbacks
+                if (mFilePathCallback != null) {
+                    mFilePathCallback.onReceiveValue(null);
+                }
+                mFilePathCallback = filePath;
+                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                    // Create the File where the photo should go
+                    File photoFile = null;
+                    try {
+                        photoFile = createImageFile();
+                        takePictureIntent.putExtra("PhotoPath", mCameraPhotoPath);
+                    } catch (IOException ex) {
+                        // Error occurred while creating the File
+                        Log.e("", "Unable to create Image File", ex);
+                    }
+                    // Continue only if the File was successfully created
+                    if (photoFile != null) {
+                        mCameraPhotoPath = "file:" + photoFile.getAbsolutePath();
+                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
+                                Uri.fromFile(photoFile));
+                    } else {
+                        takePictureIntent = null;
+                    }
+                }
+                Intent contentSelectionIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE);
+                contentSelectionIntent.setType("image/*");
+                Intent[] intentArray;
+                if (takePictureIntent != null) {
+                    intentArray = new Intent[]{takePictureIntent};
+                } else {
+                    intentArray = new Intent[0];
+                }
+                Intent chooserIntent = new Intent(Intent.ACTION_CHOOSER);
+                chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent);
+                chooserIntent.putExtra(Intent.EXTRA_TITLE, "Image Chooser");
+                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray);
+                startActivityForResult(chooserIntent, INPUT_FILE_REQUEST_CODE);
+                return true;
+            }
+
+
+            private File createImageFile() throws IOException {
+                // Create an image file name
+                String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+                String imageFileName = "JPEG_" + timeStamp + "_";
+                File storageDir = Environment.getExternalStoragePublicDirectory(
+                        Environment.DIRECTORY_PICTURES);
+                File imageFile = File.createTempFile(
+                        imageFileName,  /* prefix */
+                        ".jpg",         /* suffix */
+                        storageDir      /* directory */
+                );
+                return imageFile;
+            }
+
+
+
         });
     }
     //Get Chrome WebClient End
@@ -352,6 +506,7 @@ public class Main_ac extends AppCompatActivity
         SharedPreferences data_storage= getSharedPreferences("Own_Browser",MODE_PRIVATE);
         MAIN_AC_WEBVIEW.loadUrl(data_storage.getString("Last_URL",Home_URL));
         URL_BOX.setText(data_storage.getString("Last_URL",Home_URL));
+        Get_DeepLink();
         super.onResume();
     }
 }
